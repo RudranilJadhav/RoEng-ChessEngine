@@ -58,4 +58,6 @@ void fen_to_position(const char *fen){
         pos.fullmove=pos.fullmove*10+(*ptr-'0');
         ptr++;
     }
+    init_bb_by_squares(&pos,pos.squares);
+    pos.hash_key=generate_zobrist_key(&pos);
 }

@@ -72,6 +72,7 @@ void print_position(Position *pos){
     printf("Halfmove: %d | Fullmove: %d\n", pos->halfmove, pos->fullmove);
     printf("Zobrist Hash: 0x%016" PRIx64 "\n\n", pos->hash_key);
 
+
 }
 
 void init_squares_by_bb(Position *pos){
