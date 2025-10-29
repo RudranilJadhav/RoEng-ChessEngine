@@ -101,3 +101,63 @@ void make_move(Move move){
     }
     pos.side_to_move^=1;
 }
+
+void undo_move(){
+    history.move_count--;
+    int move=history.move[history.move_count];
+    int to=To(move);
+    int from=From(move);
+    int promo=Promo(move);
+
+    pos.ep=history.ep[history.move_count];
+    pos.castling=history.castling[history.move_count];
+    pos.halfmove=history.halfmove[history.move_count];
+    pos.hash_key=history.hash_key[history.move_count];
+
+    int moved_piece=(MoveType(move)==Promotion||MoveType(move)==PromotionCapture)?(pos.side_to_move==Black?White_Pawn:Black_Pawn):pos.squares[to];
+
+    int piece_captured_from = to;
+    if(MoveType(move)==EnPassent){
+        piece_captured_from =(pos.side_to_move==Black)?to-8:to+8;
+    }
+    pos.squares[to]=Empty;
+    pos.squares[piece_captured_from]=history.captured_piece[history.move_count];
+    pos.squares[from]=moved_piece;
+
+
+    pos.piece_bb[promo]&=~(1ULL<<to);
+    pos.piece_bb[moved_piece]&=~(1ULL<<to);
+    pos.piece_bb[moved_piece]|=(1ULL<<from);
+
+    pos.colour_bb[COLOUR(moved_piece)]&=~(1ULL<<to);
+    pos.colour_bb[COLOUR(moved_piece)]|=(1ULL<<from);
+    if(history.captured_piece[history.move_count]!=Empty){
+        pos.piece_bb[history.captured_piece[history.move_count]]|=(1ULL<<piece_captured_from);
+        pos.colour_bb[COLOUR(history.captured_piece[history.move_count])]|=(1ULL<<piece_captured_from);
+    }
+
+    pos.both_bb=pos.colour_bb[White]|pos.colour_bb[Black];
+
+    if(MoveType(move)==Castling){
+        int rook_from=-1, rook_to=-1;
+        int rook=(pos.side_to_move==Black)?White_Rook:Black_Rook;
+    
+        if(pos.side_to_move==Black&&to==c1){rook_from=a1;rook_to=d1;}
+        if(pos.side_to_move==Black&&to==g1){rook_from=h1;rook_to=f1;}
+        if(pos.side_to_move==White&&to==g8){rook_from=h8;rook_to=f8;}
+        if(pos.side_to_move==White&&to==c8){rook_from=a8;rook_to=d8;}
+    
+        if(rook_from!=-1&&rook_to!=-1){
+            pos.squares[rook_from]=rook;
+            pos.squares[rook_to]=Empty;
+    
+            pos.piece_bb[rook]|=(1ULL<<rook_from);
+            pos.piece_bb[rook]&=~(1ULL<<rook_to);
+    
+            pos.colour_bb[COLOUR(rook)]|=(1ULL<<rook_from);
+            pos.colour_bb[COLOUR(rook)]&=~(1ULL<<rook_to);
+        }
+    }
+    pos.side_to_move^=1;
+    if(pos.side_to_move==Black)pos.fullmove--;
+}

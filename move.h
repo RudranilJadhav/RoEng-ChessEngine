@@ -22,4 +22,5 @@ typedef int Move;
 #define IsPromo(move) (MoveType(move)==Promotion||MoveType(move)==PromotionCapture)
 
 void make_move(Move move);
+void undo_move();
 #endif
