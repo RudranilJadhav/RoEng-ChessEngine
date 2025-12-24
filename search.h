@@ -1,7 +1,7 @@
 #ifndef SEARCH_H
 #define SEARCH_H
 
-#include "transposition.h"
+#include "tt.h"
 
 
 static inline int quiescence(int alpha, int beta){

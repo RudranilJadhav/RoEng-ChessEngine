@@ -1,4 +1,4 @@
-#include "transposition.h"
+#include "tt.h"
 
 void clear_hash_table(){
     for(int i=0;i<hash_size;i++){

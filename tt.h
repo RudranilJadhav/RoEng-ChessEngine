@@ -1,5 +1,5 @@
-#ifndef TRANSPOSITION_H
-#define TRANSPOSITION_H
+#ifndef TT_H
+#define TT_H
 #include "eval.h"
 
 void clear_hash_table();
@@ -29,7 +29,7 @@ static inline void write_hash_entry(int score, int depth, int hash_flag){
     hash_entry->depth=depth;
 }
 
-static inline enable_pv_scoring(MOVE *move_list,int move_count){
+static inline void enable_pv_scoring(MOVE *move_list,int move_count){
     follow_pv=0;
     for(int i=0;i<move_count;i++){
         if(pv_table[0][ply]==move_list[move_count]){
@@ -39,7 +39,7 @@ static inline enable_pv_scoring(MOVE *move_list,int move_count){
     }
 }
 
-static inline score_move(int move){
+static inline int score_move(int move){
     if(score_pv){
         if(pv_table[0][ply]==move){score_pv=0;return 20000;}
     }

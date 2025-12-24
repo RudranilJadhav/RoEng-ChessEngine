@@ -6,7 +6,7 @@
 #include "attacks.h"
 #include "move_gen.h"
 #include "eval.h"
-#include "transposition.h"
+#include "tt.h"
 
 void init(const char *fen);//input fen
 
