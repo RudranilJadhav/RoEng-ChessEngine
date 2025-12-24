@@ -1,0 +1,5 @@
+1. Implement Magic Bits
+2. Better Histroy struct 
+3. redo struct to save memory
+4. more helper function for clean code
+5. change Movesort from bubble to merge

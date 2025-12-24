@@ -1,41 +1,30 @@
 #include "zobrist.h"
-#include <stdint.h>
-#include <stdlib.h>
-
-static inline uint64_t rand64() {
-    uint64_t r=0;
-    for (int i=0;i<4;i++) {
-        r=(r<<16)|(rand()&0xFFFF);
-    }
-    return r;
-}
 
 void init_zobrist(){
     srand(28);
-    for(int p=1;p<=14;p++){
-        if(p==7||p==8)continue;
-        for(int sq=0;sq<64;sq++){
-            zobrist.zobrist_pieces[p][sq]=rand64();
+    for(int piece=White_Pawn;piece<=Black_King;piece++){
+        for(int sq=a1;sq<=h8;sq++){
+            zobrist.zobrist_pieces[piece][sq]=rand64();
         }
     }
-    for(int i=0;i<8;i++)zobrist.zobrist_ep[i]=rand64();
-    for(int i=0;i<16;i++)zobrist.zobrist_castling[i]=rand64();
+    for(int file=0;file<=7;file++)zobrist.zobrist_ep[file]=rand64();
+    for(int castling_right=0;castling_right<=15;castling_right++)zobrist.zobrist_castling[castling_right]=rand64();
     zobrist.zobrist_side=rand64();
 }
 
 U64 generate_zobrist_key(Position *pos){
     U64 key=0;
-    for(int sq=0;sq<64;sq++){
-        if(pos->squares[sq]){
-            key^=zobrist.zobrist_pieces[pos->squares[sq]][sq];
+    for(int sq=a1;sq<=h8;sq++){
+        if(pos->squares[sq]!=Empty){
+            int piece=pos->squares[sq];
+            key^=zobrist.zobrist_pieces[piece][sq];
         }
     }
-    if(pos->side_to_move)key^=zobrist.zobrist_side;
-    if(pos->castling)key^=zobrist.zobrist_castling[pos->castling];
+    if(pos->side_to_move==White)key^=zobrist.zobrist_side;
     if(pos->ep!=No_SQ){
-        int ep_sq=pos->ep;
-        int file=ep_sq%8;     
-        key^=zobrist.zobrist_ep[file];       
+        int file=(pos->ep)%8;
+        key^=zobrist.zobrist_ep[file];
     }
+    key^=zobrist.zobrist_castling[pos->castling];
     return key;
 }

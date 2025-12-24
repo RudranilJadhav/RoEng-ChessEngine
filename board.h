@@ -2,16 +2,15 @@
 #define BOARD_H
 
 #include "def.h"
-#include "bbc.h"
+#include "zobrist.h"
 
 char piece_to_char(int piece);
-int char_to_piece(char c);
-void print_position(Position *pos);
-void init_squares_by_bb(Position *pos);
-void init_bb_by_squares(Position *pos,int sq[64]);
-void init_board();
+int char_to_piece(char ch);
+void print_position();
+void init_bb_by_squares(int squares[64]);
 void clear_history();
 void clear_board();
+
 
 
 #endif

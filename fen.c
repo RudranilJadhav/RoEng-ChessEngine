@@ -1,11 +1,8 @@
 #include "fen.h"
-#include <ctype.h>
-#include <stdlib.h>
-#include <string.h>
 
 void fen_to_position(const char *fen){
     if (!fen) return;
-    clear_board();
+    clear_board();clear_history();
     const char *ptr=fen;
     if (!*ptr) return;
     int sq=a8;
@@ -30,10 +27,10 @@ void fen_to_position(const char *fen){
     pos.side_to_move=(*ptr=='w')?White:Black;
     ptr+=2;
     while(*ptr&&*ptr!=' '){
-        if(*ptr=='K')pos.castling|=0x8;
-        if(*ptr=='Q')pos.castling|=0x4;
-        if(*ptr=='k')pos.castling|=0x2;
-        if(*ptr=='q')pos.castling|=0x1;
+        if(*ptr=='K')pos.castling|=WKCA;
+        if(*ptr=='Q')pos.castling|=WQCA;
+        if(*ptr=='k')pos.castling|=BKCA;
+        if(*ptr=='q')pos.castling|=BQCA;
         ptr++;
     }
     ptr++;
@@ -54,10 +51,10 @@ void fen_to_position(const char *fen){
     }
     if(*ptr==' ')ptr++;
     pos.fullmove=0;
-    while(*ptr>='0'&&*ptr<='9') {
+    while(*ptr>='0'&&*ptr<='9'){
         pos.fullmove=pos.fullmove*10+(*ptr-'0');
         ptr++;
     }
-    init_bb_by_squares(&pos,pos.squares);
+    init_bb_by_squares(pos.squares);
     pos.hash_key=generate_zobrist_key(&pos);
 }
