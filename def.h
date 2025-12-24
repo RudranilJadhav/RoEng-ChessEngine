@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <string.h>
+#include <unistd.h>
 
 #if defined(_WIN32) || defined(_WIN64)
     #include <windows.h>
@@ -56,6 +58,7 @@ typedef enum {
     a7, b7, c7, d7, e7, f7, g7, h7,
     a8, b8, c8, d8, e8, f8, g8, h8,
 } Square;
+extern const char *SQ[64] ;
 
 #define RANK_1 0x00000000000000FFULL
 #define RANK_2 0x000000000000FF00ULL
@@ -130,7 +133,7 @@ static inline U64 rand64(){U64 r=0;for(int i=0;i<4;i++){r=(r<<16)|(rand()&0xFFFF
 #define From(move) ((move)&(63))
 #define To(move) ((move>>6)&(63))
 #define Move_Type(move) ((move>>12)&7)
-#define Promo(move) ((move>>15)&7)
+#define Promo(move) ((move>>15)&15)
 
 #define QuietMove 0
 #define Promotion 1 
@@ -140,7 +143,7 @@ static inline U64 rand64(){U64 r=0;for(int i=0;i<4;i++){r=(r<<16)|(rand()&0xFFFF
 #define DoublePawn 5
 #define PromotionCapture 6
 
-#define Encode_Move(from,to,movetype,promo) (((from)&63)|((to&63)<<6)|((movetype&7)<<12)|((promo&7)<<15))
+#define Encode_Move(from,to,movetype,promo) (((from)&63)|((to&63)<<6)|((movetype&7)<<12)|((promo&15)<<15))
 
 #define infinity 50000
 #define mate_value 49000
@@ -210,7 +213,7 @@ extern U64 nodes;
 int get_time_ms();
 int input_waiting();
 void read_input();
-static void communicate();
+void communicate();
 
 #endif
 
