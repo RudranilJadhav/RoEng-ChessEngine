@@ -13,8 +13,8 @@ void init(){
 int parse_move(char *move_string){
     int movelist[256];
     int movecount=generate_legal_moves(movelist);
-    int ss=(move_string[0]-'a')+(move_string[1]-'0')*8;
-    int ts=(move_string[2]-'a')+(move_string[3]-'0')*8;
+    int ss=(move_string[0]-'a')+(move_string[1]-'1')*8;
+    int ts=(move_string[2]-'a')+(move_string[3]-'1')*8;
     for(int count=0;count<movecount;count++){
         if(ss==From(movelist[count])&&ts==To(movelist[count])){
             int p=Promo(movelist[count]);
@@ -43,16 +43,22 @@ void parse_position(char *command){
             fen_to_position(current_char);
         }
     }
-    if(current_char!=NULL){
-        current_char+=6;
-        while(*current_char){
-            int move=parse_move(current_char);
-            if(move==0)break;
+    current_char = strstr(command, "moves");
+    
+    if (current_char != NULL) {
+        current_char += 6; // Skip past "moves "
+        
+        while(*current_char) {
+            int move = parse_move(current_char);
+            if (move == 0) break;
+            
             repetition_index++;
-            repetition_table[repetition_index]=pos.hash_key;
+            repetition_table[repetition_index] = pos.hash_key;
             make_move(move);
-            while(*current_char&&*current_char!=' ')current_char++;
-            current_char++;
+            
+            // Move to the next move in the string
+            while(*current_char && *current_char != ' ') current_char++;
+            while(*current_char == ' ') current_char++; // Skip spaces
         }
     }
     print_position();
@@ -91,14 +97,13 @@ void uci_loop(){
     setbuf(stdin, NULL);
     setbuf(stdout, NULL);
     char input[2000];
-    printf("id name ROENG\n");
-    printf("id name V.1.0.0\n");
-    printf("uciok\n");
+    
     while(1){
         memset(input, 0, sizeof(input));
         fflush(stdout);
         if (!fgets(input, 2000, stdin))continue;
         if (input[0] == '\n')continue;
+        
         if (strncmp(input, "isready", 7) == 0){
             printf("readyok\n");
             continue;
@@ -113,11 +118,17 @@ void uci_loop(){
         }
         else if (strncmp(input, "go", 2) == 0)parse_go(input);
         else if (strncmp(input, "quit", 4) == 0) break;
+        else if (strncmp(input, "setoption", 9) == 0) {
+            // Ignore for now, but acknowledge to prevent lichess-bot crash
+            continue;
+        }
         else if (strncmp(input, "uci", 3) == 0)
         {
-            // print engine info
             printf("id name ROENG\n");
             printf("id name V.1.0.0\n");
+            // Advertise standard options so lichess-bot can set them
+            printf("option name Hash type spin default 64 min 1 max 1024\n");
+            printf("option name Move Overhead type spin default 10 min 0 max 5000\n");
             printf("uciok\n");
         }
     }

@@ -247,15 +247,15 @@ void read_input()
         // tell engine to stop calculating
         stopped = 1;
         
-        // loop to read bytes from STDIN
-        do
-        {
-            // read bytes from STDIN
-            bytes=read(fileno(stdin), input, 256);
+        // read input byte-by-byte until newline to preserve the rest of the buffer
+        int i = 0;
+        char c;
+        while (i < 255 && read(fileno(stdin), &c, 1) > 0) {
+            input[i++] = c;
+            if (c == '\n') break;
         }
-        
-        // until bytes available
-        while (bytes < 0);
+        input[i] = 0;
+        bytes = i;
         
         // searches for the first occurrence of '\n'
         endc = strchr(input,'\n');
@@ -275,13 +275,12 @@ void read_input()
 
             // // match UCI "stop" command
             else if (!strncmp(input, "stop", 4))    {
-                // tell engine to terminate exacution
-                quit = 1;
+                // tell engine to stop calculating
+                stopped = 1; 
             }
         }   
     }
 }
-
 // a bridge function to interact between search and GUI input
 void communicate(){
 	// if time is up break here
