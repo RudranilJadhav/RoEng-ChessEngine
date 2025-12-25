@@ -153,6 +153,9 @@ const char *SQ[64] = {
     "a8","b8","c8","d8","e8","f8","g8","h8"
 };
 
+const int full_depth_moves = 4;
+const int reduction_limit = 3;
+
 /**********************************\
  ==================================
  

@@ -452,20 +452,29 @@ U64 perft(int depth) {
     return nodes;
 }
 
-void perft_debug(int depth) {
-    if (depth == 0) return;
-    MOVE move_list[256];
-    U64 sum=0;
-    int move_count = generate_legal_moves(move_list);
-    for (int i = 0; i < move_count; i++) {
-        make_move(move_list[i]);
-        U64 nodes = (depth == 1)?1:perft(depth-1);
-        undo_move();
-        // Print move and node count for debugging
-        sum+=nodes;
-        char p=piece_to_char(Promo(move_list[i]));
-        if(p=='.') printf("%s %s %llu\n", SQ[From(move_list[i])], SQ[To(move_list[i])], nodes);
-        else printf("%s %s %c %llu\n", SQ[From(move_list[i])], SQ[To(move_list[i])],p,nodes);
+// void perft_debug(int depth) {
+//     if (depth == 0) return;
+//     MOVE move_list[256];
+//     U64 sum=0;
+//     int move_count = generate_legal_moves(move_list);
+//     for (int i = 0; i < move_count; i++) {
+//         make_move(move_list[i]);
+//         U64 nodes = (depth == 1)?1:perft(depth-1);
+//         undo_move();
+//         // Print move and node count for debugging
+//         sum+=nodes;
+//         char p=piece_to_char(Promo(move_list[i]));
+//         if(p=='.') printf("%s %s %llu\n", SQ[From(move_list[i])], SQ[To(move_list[i])], nodes);
+//         else printf("%s %s %c %llu\n", SQ[From(move_list[i])], SQ[To(move_list[i])],p,nodes);
+//     }
+//     printf("%llu \n",sum);
+// }
+
+void print_move(MOVE move){
+    if(Promo(move)){
+        printf("%s%s%c",SQ[From(move)], SQ[To(move)],piece_to_char(Promo(move)));
     }
-    printf("%llu \n",sum);
+    else{
+         printf("%s%s",SQ[From(move)], SQ[To(move)]);
+    }
 }

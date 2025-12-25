@@ -7,7 +7,10 @@
 #include "move_gen.h"
 #include "eval.h"
 #include "tt.h"
-
-void init(const char *fen);//input fen
-
+#include "search.h"
+void init();
+int parse_move(char *move_string);
+void parse_position(char *command);
+void parse_go(char *command);
+void uci_loop();
 #endif

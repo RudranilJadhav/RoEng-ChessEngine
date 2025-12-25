@@ -155,6 +155,9 @@ static inline U64 rand64(){U64 r=0;for(int i=0;i<4;i++){r=(r<<16)|(rand()&0xFFFF
 #define hash_flag_beta 2
 #define no_hash_entry 100000
 
+#define is_capture(move) (Move_Type(move)==Capture||Move_Type(move)==Promotion||Move_Type(move)==EnPassant)
+#define is_promotion(move) (Move_Type(move)==Promotion||Move_Type(move)==PromotionCapture)
+
 // Globals
 extern Position pos;
 extern History history;
@@ -209,11 +212,38 @@ extern int stoptime;
 extern int timeset;
 extern int stopped;
 extern U64 nodes;
+extern const int full_depth_moves;
+extern const int reduction_limit;
 
 int get_time_ms();
 int input_waiting();
 void read_input();
 void communicate();
+
+// preserve board state
+#define copy_board()                                                        \
+    U64 piece_bb_copy[13];                                                  \
+    U64 colour_bb_copy[2];                                                  \
+    U64 both_bb_copy;                                                       \
+    int side_copy, enpassant_copy, castle_copy;                             \
+    U64 hash_key_copy;                                                      \
+    memcpy(piece_bb_copy, pos.piece_bb, sizeof(pos.piece_bb));              \
+    memcpy(colour_bb_copy, pos.colour_bb, sizeof(pos.colour_bb));           \
+    both_bb_copy = pos.both_bb;                                             \
+    side_copy = pos.side_to_move;                                           \
+    enpassant_copy = pos.ep;                                                \
+    castle_copy = pos.castling;                                             \
+    hash_key_copy = pos.hash_key;
+
+// restore board state
+#define take_back()                                                         \
+    memcpy(pos.piece_bb, piece_bb_copy, sizeof(pos.piece_bb));              \
+    memcpy(pos.colour_bb, colour_bb_copy, sizeof(pos.colour_bb));           \
+    pos.both_bb = both_bb_copy;                                             \
+    pos.side_to_move = side_copy;                                           \
+    pos.ep = enpassant_copy;                                                \
+    pos.castling = castle_copy;                                             \
+    pos.hash_key = hash_key_copy;
 
 #endif
 

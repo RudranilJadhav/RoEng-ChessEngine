@@ -21,5 +21,6 @@ bool is_square_attacked(int square);
 bool is_castling_legal(MOVE move);
 U64 perft(int depth);
 void perft_debug(int depth);
+void print_move(MOVE move);
 
 #endif
