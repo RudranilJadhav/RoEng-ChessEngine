@@ -1,24 +1,39 @@
-# RoEng-ChessEngine
-**RoEng** is a **UCI-compliant chess engine written entirely in C**, focused on performance, clean architecture, and classic game-search techniques.  
-The engine uses **bitboards**, **alpha–beta search**, and **Zobrist hashing** to efficiently explore the game tree and make strong move decisions.
 
----
+# ROENG : Chess Engine
 
-## Features
+**ROENG** is UCI Chess Engine written in C !
 
-- **UCI Protocol Support**  
-  Compatible with chess GUIs like **Arena**, **CuteChess**, and **Lichess (via API)**
+### Performance on Lichess
+**Lichess Profile :**  [View Profile](https://lichess.org/@/ROENG)
 
-- **Bitboard-Based Board Representation**  
-  Fast and memory-efficient move generation using 64-bit bitboards
+**Lichess ELO Rating :**
 
-- **Minimax Search with Alpha–Beta Pruning**  
-  Efficient game-tree exploration
+- **Bullet :**  [1897](https://lichess.org/@/ROENG/perf/bullet)
+- **Blitz :** [1777](https://lichess.org/@/ROENG/perf/blitz)
 
-- **Zobrist Hashing & Transposition Table**  
-  Avoids re-evaluating repeated positions
+### Installation Guide
+```
+git clone https://github.com/RudranilJadhav/RoEng-ChessEngine.git
+cd RoEng-ChessEngine
+make
 
-- **Heuristic Evaluation Function**
-  - Material scoring
-  - Piece-square tables
-  - Basic positional evaluation
+```
+You can add ROENG to any UCI compatible GUI including Arena Chess, CuteChess and
+Lichess-Bots(API). 
+
+[Here guide to deploy engine on Lichess-Bots](https://github.com/lichess-bot-devs/lichess-bot/wiki/How-to-Install)
+
+### About Engine and it's features
+- Used Bitboards for board representation
+- Basic move genrator for genration of peudo-legal and legal moves
+- Incremental updates with make move and undo move functions
+- Zorbist Hashing to avoid repetition of previously searched positions
+- Hurustic Evaluation based on with Piece-Square Table
+- Alpha Beta search optimized by negamax algorithm, quiescence with move ordering
+
+### Acknowledgements
+- [Chess Programming Wiki](https://www.chessprogramming.org/)
+- [Bitboard Chess Engine by Code Monkey King](https://github.com/maksimKorzh/bbc/blob/master/src/old_versions/bbc_1.0.c)
+- [Art of Chess Programming in Rust](https://rustic-chess.org/)
+
+
