@@ -186,7 +186,7 @@ int get_time_ms()
   
   First Richard Allbert aka BluefeverSoftware grabbed it from somewhere...
   And then Code Monkey King has grabbed it from VICE)
-  
+  And then I grabbed it from Code Monkey :) 
 */
   
 int input_waiting()
